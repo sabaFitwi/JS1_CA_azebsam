@@ -17,7 +17,7 @@ span.h1-wrap {
       rgba(0, 0, 0, 0.42) 50%,
       rgba(0, 0, 0, 0.42) 50%
     ),
-    url(../images/background.jpg);
+    url(../images/background.png);
   max-width: 100%;
   height: 300px;
   background-size: cover;
