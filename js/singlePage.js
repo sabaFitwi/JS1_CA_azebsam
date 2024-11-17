@@ -1,61 +1,60 @@
 import apiURL from "./data.js";
-
-const apiUrl = apiURL;
-const params = new URLSearchParams(window.location.search);
-const productId = params.get("id");
-
-console.log("Product ID:", productId);
+console.log(apiURL);
 
 const productDetailContainer =
-  document.getElementById("product-detail");
+  document.querySelector(".product-detail");
 
-async function fetchProduct(id) {
-  const apiUrl = apiURL;
-  const params = new URLSearchParams(window.location.search);
-  const productId = params.get("id");
-
-  console.log("Product ID:", productId);
+async function fetchProduct() {
   try {
-    const response = await fetch(`${apiUrl}/${productId}`);
-    console.log("API response:", response);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-
-    const product = await response.json();
-    console.log("Product details:", product);
-
-    renderProduct(product);
+    const response = await fetch(apiURL);
+    const productDetailApi = await response.json();
+    renderProduct(productDetailApi);
+    console.log(productDetailApi).id;
   } catch (error) {
     console.error("Error fetching product:", error);
-    productDetailContainer.innerHTML = `<p>Error loading product. Please try again later.</p>`;
+    productDetailContainer.innerHTML = displayError(
+      "An error occurred while fetching product details. Please try again."
+    );
+    productDetailContainer.classList.add("error");
   }
 }
 
-function renderProduct(product) {
-  console.log("Rendering product...");
-  productDetailContainer.innerHTML = `
-    <div class="product-container">
-      <div class="product-image">
-        <img src="${product.image}" alt="${product.title}">
+function renderProduct(productUrl) {
+  productUrl.forEach(function () {
+    const queryString = document.location.search;
+    const params = new URLSearchParams(queryString);
+    const productId = params.get("id");
+    const product = productUrl.find(({ id }) => id == productId);
+    productDetailContainer.innerHTML = `
+    <section class="banner">
+      <div ${product.image}" class="bannerImage" alt="${
+      product.title
+    }"></div>
+      <div class="banner__content">
+        <h1>${product.title}</h1>
+        <div class="product-info">
+          <p>${product.description}</p>
+          <p><strong>Price:</strong> $${product.discountedPrice.toFixed(
+            2
+          )}</p>
+          <button id="add-to-cart" data-id="${
+            product.id
+          }" class="add-to-cart-btn">Add to Cart</button>
+        </div>
       </div>
-      <div class="product-info">
-        <h2>${product.title}</h2>
-        <p>${product.description}</p>
-        <p><strong>Price:</strong> $${product.discountedPrice.toFixed(
-          2
-        )}</p>
-        <button id="add-to-cart" data-id="${
-          product.id
-        }" class="add-to-cart-btn">Add to Cart</button>
-      </div>
-    </div>
+    </section>
   `;
+  });
+
+  document
+    .getElementById("add-to-cart")
+    .addEventListener("click", function () {
+      addToCart(product.id);
+    });
 }
 
-if (productId) {
-  fetchProduct(productId);
-} else {
-  productDetailContainer.innerHTML = `<p>No product ID provided. Unable to load product details.</p>`;
+function addToCart(productId) {
+  console.log(`Product ${productId} added to cart.`);
 }
+
+fetchProduct();

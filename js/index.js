@@ -28,17 +28,16 @@ function generateHtml() {
     productsContainer.innerHTML += `<div class="products">
                                          <a href="products/singlePage.html?${data.id}"> 
                                            <div style="background-image: url(${data.image})"
-                                                class="image-products" alt="${data.category}"></div>
+                                                class="image-products" alt="${data.tags[0]}"></div>
                                          </a>
                                          <h4>${data.title}</h4>
                                          <p>US $${data.price}</p>
                                          <button class="cart" data-result="${data.id}">Add to cart</button>
                                     </div>`;
   });
-  setUpCartListeners(); // Set up click listeners after rendering
+  setUpCartListeners();
 }
 
-// Set up event listeners for "Add to Cart" buttons
 function setUpCartListeners() {
   const addToCart = document.querySelectorAll(".cart");
   for (let i = 0; i < addToCart.length; i++) {
@@ -58,5 +57,5 @@ function setUpCartListeners() {
   }
 }
 
-// Call fetchData to start the process
+//
 fetchData();
